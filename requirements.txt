@@ -5,3 +5,7 @@ mysql-connector-python
 pyttsx3
 Pillow
 pysimplegui
+PyQt5
+cv2
+tkinter
+test_designer
