@@ -1,0 +1,7 @@
+numpy
+opencv-python
+opencv-contrib-python
+mysql-connector-python
+py3-tts
+Pillow
+pysimplegui
