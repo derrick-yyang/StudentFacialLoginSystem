@@ -13,3 +13,6 @@ venv/
 env/
 .venv/
 .env/
+
+labels.pickle
+train.yml
