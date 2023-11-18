@@ -8,8 +8,8 @@ video_capture = cv2.VideoCapture(0)
 # Specify the `user_name` and `NUM_IMGS` here.
 user_name = "Derrick"
 NUM_IMGS = 400
-if not os.path.exists('data/captured_faces/{}'.format(user_name)):
-    os.mkdir('data/captured_faces/{}'.format(user_name))
+if not os.path.exists('../data/captured_faces/{}'.format(user_name)):
+    os.mkdir('../data/captured_faces/{}'.format(user_name))
 
 cnt = 1
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -50,7 +50,7 @@ while cnt <= NUM_IMGS:
     # Display the resulting frame
     cv2.imshow('Video', frame)
     # Store the captured images in `data/Jack`
-    cv2.imwrite("data/{}/{}{:03d}.jpg".format(user_name, user_name, cnt), frame)
+    cv2.imwrite("../data/captured_faces/{}/{}{:03d}.jpg".format(user_name, user_name, cnt), frame)
     cnt += 1
 
     key = cv2.waitKey(100)
