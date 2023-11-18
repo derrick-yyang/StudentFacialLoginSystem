@@ -2,7 +2,7 @@
 .DS_Store
 
 # Pictures in data folder for training
-data/*
+*.jpg
 
 # Byte-compiled / optimized Python files
 __pycache__/
