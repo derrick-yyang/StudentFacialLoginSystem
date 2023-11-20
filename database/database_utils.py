@@ -107,14 +107,14 @@ LIMIT
         course = result[0]
         course_details = {}
         course_details['name'] = course[0]
-        course_details['description'] = course[1]
-        course_details['teacher_name'] = course[2]
-        course_details['teacher_email'] = course[3]
-        course_details['start_time'] = str(course[4])
-        course_details['end_time'] = str(course[5])
-        course_details['classroom'] = course[6]
-        course_details['zoom_link'] = course[7]
-        course_details['lecture_notes'] = course[8]
+        course_details['Course Description'] = course[1]
+        course_details['Teacher Name'] = course[2]
+        course_details['Teacher Email'] = course[3]
+        course_details['Start Time'] = str(course[4])
+        course_details['End Time'] = str(course[5])
+        course_details['Classroom'] = course[6]
+        course_details['Zoom Link'] = course[7]
+        course_details['Lecture Notes'] = course[8]
 
         return course_details
     
