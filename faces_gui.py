@@ -18,7 +18,7 @@ def show_tkinter_hello(name,result):
     app = Application(master=root)
     app.master.title('Welcome ' + name)
     #student_id, name, DAY(login_date), MONTH(login_date), YEAR(login_date)
-    message = Label(root, text = 'Student_id is ' + str(result[0]) + ' | Login Time: ' + str(result[2]) + '/ ' + str(result[3]) + '/ ' + str(result [4]))
+    message = Label(root, text = 'Student_id is ' + str(result[0]) + ' | Login Time: ' + str(result[2]) + '/' + str(result[3]) + '/' + str(result [4]))
     message.pack()
     app.mainloop()
 
