@@ -15,6 +15,7 @@ def start_login():
         date = datetime.utcnow()
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
+        name = 'Derrick' # TODO: Remove this after camera recognition is accurate
 
 
         #2 Load recognize and read label from model
@@ -50,7 +51,7 @@ def start_login():
                     font = cv2.QT_FONT_NORMAL
                     id = 0
                     id += 1
-                    name = labels[id_]
+                    # name = labels[id_]
                     current_name = name
                     color = (255, 0, 0)
                     stroke = 2
@@ -58,7 +59,7 @@ def start_login():
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), (2))
 
                     # Find the student's information in the database.
-                    select = "SELECT student_id, name, DAY(login_date), MONTH(login_date), YEAR(login_date) FROM Student WHERE name='%s'" % (name)
+                    select = "SELECT student_id, student_name, DAY(login_date), MONTH(login_date), YEAR(login_date) FROM Students WHERE name='%s'" % (name)
                     result = db.execute_query(select)
                     # print(result)
                     data = "error"
@@ -112,9 +113,8 @@ def start_login():
 def main():
     
     # Define login interface
-    name = 'Derrick'
     root = tk.Tk()
-    root.title('Welcome ' + name)
+    root.title('Welcome!')
 
     def button_click():
         root.destroy()

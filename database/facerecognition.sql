@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS Students (
     student_id INT AUTO_INCREMENT PRIMARY KEY,
     student_name VARCHAR(100) NOT NULL,
     login_time TIMESTAMP NOT NULL,
-    logout_time TIMESTAMP NOT NULL
+    logout_time TIMESTAMP NOT NULL,
     login_date DATE NOT NULL
 );
 
