@@ -1,15 +1,14 @@
-import urllib
-import numpy as np
 import mysql.connector
 import cv2
 import pyttsx3
 import pickle
 from datetime import datetime
-import sys
 import PySimpleGUI as sg
-
+import os
 from tkinter import *
 import tkinter.messagebox as messagebox
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Application(Frame):
     def __init__(self, master=None):
@@ -43,9 +42,9 @@ class Application(Frame):
         message = Label(root, text = 'Student_id is ' + str(result[0]) + ' | Login Time: ' + str(result[2]) + '/' + str(result[3]) + '/' + str(result [4]))
         message.pack()
         app.mainloop()
-    
+
 # 1 Create database connection
-myconn = mysql.connector.connect(host="localhost", user="root", passwd="Z161925g", database="facerecognition")
+myconn = mysql.connector.connect(host="localhost", user="root", passwd="", database="facerecognition")
 date = datetime.utcnow()
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
@@ -54,10 +53,10 @@ cursor = myconn.cursor()
 
 #2 Load recognize and read label from model
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read("train.yml")
+recognizer.read(os.path.join(BASE_DIR, "../data/train.yml"))
 
 labels = {"person_name": 1}
-with open("../data/labels.pickle", "rb") as f:
+with open(os.path.join(BASE_DIR, "../data/labels.pickle"), "rb") as f:
     labels = pickle.load(f)
     labels = {v: k for k, v in labels.items()}
 
@@ -67,7 +66,7 @@ rate = engine.getProperty("rate")
 engine.setProperty("rate", 175)
 
 # Define camera and detect face
-face_cascade = cv2.CascadeClassifier('../haarcascade/haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier(os.path.join(BASE_DIR, '../haarcascade/haarcascade_frontalface_default.xml'))
 cap = cv2.VideoCapture(0)
 
 
