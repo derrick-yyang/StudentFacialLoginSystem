@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 image_dir = os.path.join(BASE_DIR, "../data/captured_faces")
 
 # Load the OpenCV face recognition detector Haar
-face_cascade = cv2.CascadeClassifier('../haarcascade/haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier(os.path.join(BASE_DIR, '../haarcascade/haarcascade_frontalface_default.xml'))
 # Create OpenCV LBPH recognizer for training
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 
@@ -47,9 +47,9 @@ for root, dirs, files in os.walk(image_dir):
 # labels.pickle store the dict of labels.
 # {name: id}  
 # id starts from 0
-with open("../data/labels.pickle", "wb") as f:
+with open(os.path.join(BASE_DIR, "../data/labels.pickle"), "wb") as f:
     pickle.dump(label_ids, f)
 
 # Train the recognizer and save the trained model.
 recognizer.train(x_train, np.array(y_label))
-recognizer.save("../data/train.yml")
+recognizer.save(os.path.join(BASE_DIR, "../data/train.yml"))
