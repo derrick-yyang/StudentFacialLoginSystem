@@ -3,8 +3,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-faceCascade = cv2.CascadeClassifier('../haarcascade/haarcascade_frontalface_default.xml')
-
 video_capture = cv2.VideoCapture(0)
 
 # Specify the `user_name` and `NUM_IMGS` here.
