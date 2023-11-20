@@ -28,6 +28,12 @@ class DatabaseUtils:
         result = self.cursor.fetchall()
         self.__close()
         return result
+
+    def execute_update_query(self, query):
+        self.__connect()
+        self.cursor.execute(query)
+        self.connection.commit()
+        self.__close()
     
     def getNextClassStartTime(self, name):
         query = """SELECT 
