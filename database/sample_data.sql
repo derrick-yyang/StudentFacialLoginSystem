@@ -18,8 +18,8 @@ SET @course_id = (SELECT course_id FROM Courses WHERE course_name = 'Introductio
 
 -- Insert two classes that happen at 2:30pm - 3:30pm on Tuesday and Thursday
 INSERT INTO Classes (course_id, day_of_week, start_time, end_time, classroom, zoom_link)
-VALUES (@course_id, 'Tuesday', '14:30:00', '15:30:00', 'Room 101', 'https://zoom.us/j/1234567890'),
-       (@course_id, 'Thursday', '14:30:00', '15:30:00', 'Room 101', 'https://zoom.us/j/1234567890');
+VALUES (@course_id, 'Tuesday', '14:00:00', '15:00:00', 'Room 101', 'https://zoom.us/j/1234567890'),
+       (@course_id, 'Thursday', '14:00:00', '15:00:00', 'Room 101', 'https://zoom.us/j/1234567890');
 
 -- Get the ID of the student we inserted earlier
 SET @student_id = (SELECT student_id FROM Students WHERE student_name = 'Derrick');
