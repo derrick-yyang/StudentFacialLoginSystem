@@ -22,7 +22,7 @@ class DatabaseUtils:
             self.cursor.close()
             self.connection.close()
     
-    def __execute_query(self, query):
+    def execute_query(self, query):
         self.__connect()
         self.cursor.execute(query)
         result = self.cursor.fetchall()
@@ -46,7 +46,7 @@ ORDER BY
 LIMIT 
     1;""".format(name)
         
-        result = self.__execute_query(query)
+        result = self.execute_query(query)
 
         return str(result[0][0]) # Return in readable format
     
@@ -67,7 +67,7 @@ JOIN
 WHERE 
     S.student_name = '{}';""".format(name)
         
-        result = self.__execute_query(query) 
+        result = self.execute_query(query) 
 
         class_schedule = defaultdict(list)
         for cl in result:
@@ -102,7 +102,7 @@ ORDER BY
 LIMIT 
     1;""".format(name)
         
-        result = self.__execute_query(query)
+        result = self.execute_query(query)
 
         course = result[0]
         course_details = {}
