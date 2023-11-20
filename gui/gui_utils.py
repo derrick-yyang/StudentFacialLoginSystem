@@ -46,7 +46,7 @@ class CourseScheduleWindow:
         
         # Add the courses from the given schedule
         for name in self.schedule:
-            details = schedule[name]
+            details = self.schedule[name]
             self.add_course(course_name=name, day=details[2], start_time=details[0], end_time=details[1], frame=frame)
 
     
