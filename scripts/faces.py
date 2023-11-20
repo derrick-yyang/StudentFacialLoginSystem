@@ -17,10 +17,10 @@ cursor = myconn.cursor()
 
 #2 Load recognize and read label from model
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read("train.yml")
+recognizer.read("../data/train.yml")
 
 labels = {"person_name": 1}
-with open("labels.pickle", "rb") as f:
+with open("../data/labels.pickle", "rb") as f:
     labels = pickle.load(f)
     labels = {v: k for k, v in labels.items()}
 
@@ -30,7 +30,7 @@ rate = engine.getProperty("rate")
 engine.setProperty("rate", 175)
 
 # Define camera and detect face
-face_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('../haarcascade/haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
 
 # 3 Open the camera and start face recognition
