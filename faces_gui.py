@@ -10,18 +10,40 @@ import PySimpleGUI as sg
 
 from tkinter import *
 import tkinter.messagebox as messagebox
-from user_interface import Application
+
+class Application(Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.pack()
+        self.createWidgets()
+        
+    def createWidgets(self):
+        self.alertButton = Button(self, text='login', command=self.hello)
+        self.alertButton.pack()
+    
+    # the window after login
+    def hello(self):
+        messagebox.showinfo('Message', 'Hello')
 
 
-def show_tkinter_hello(name,result):
-    root = Tk()
-    app = Application(master=root)
-    app.master.title('Welcome ' + name)
-    #student_id, name, DAY(login_date), MONTH(login_date), YEAR(login_date)
-    message = Label(root, text = 'Student_id is ' + str(result[0]) + ' | Login Time: ' + str(result[2]) + '/' + str(result[3]) + '/' + str(result [4]))
-    message.pack()
-    app.mainloop()
+    def show_tkinter_hello(name,result):
+        root = Tk()
+        app = Application(master=root)
+        app.master.title('Welcome ' + name)
+        #student_id, name, DAY(login_date), MONTH(login_date), YEAR(login_date)
+        message = Label(root, text = 'Student_id is ' + str(result[0]) + ' | Login Time: ' + str(result[2]) + '/' + str(result[3]) + '/' + str(result [4]))
+        message.pack()
+        app.mainloop()
 
+    def show_tkinter_first(name,result):
+        root = Tk()
+        app = Application(master=root)
+        app.master.title('Welcome ' + name)
+        #student_id, name, DAY(login_date), MONTH(login_date), YEAR(login_date)
+        message = Label(root, text = 'Student_id is ' + str(result[0]) + ' | Login Time: ' + str(result[2]) + '/' + str(result[3]) + '/' + str(result [4]))
+        message.pack()
+        app.mainloop()
+    
 # 1 Create database connection
 myconn = mysql.connector.connect(host="localhost", user="root", passwd="Z161925g", database="facerecognition")
 date = datetime.utcnow()
@@ -53,7 +75,7 @@ cap = cv2.VideoCapture(0)
 layout =  [
     [sg.Text('Setting', size=(18,1), font=('Any',18),text_color='#1c86ee' ,justification='left')],
     [sg.Text('Confidence'), sg.Slider(range=(0,100),orientation='h', resolution=1, default_value=60, size=(15,15), key='confidence')],
-    [sg.OK(), sg.Cancel()]
+    [sg.OK(button_text= 'LOGIN'), sg.Cancel(button_text= 'CANCEL')]
       ]
 win = sg.Window('Attendance System',
         default_element_size=(21,1),
@@ -132,7 +154,7 @@ while True:
                 engine.say(hello)    
 
             if data != "error":
-                show_tkinter_hello(current_name,data)
+                Application.show_tkinter_hello(current_name,data)
 
         # If the face is unrecognized
         else: 
