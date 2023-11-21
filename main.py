@@ -71,29 +71,9 @@ def start_login():
                     # If the student's information is not found in the database
                     if data == "error":
                         print("The student", current_name, "is NOT FOUND in the database.")
-                # If the student's information is found in the database
+                        
+                     # If the student's information is found in the database
                     else:
-                        """
-                        Implement useful functions here.
-                        Check the course and classroom for the student.
-                            If the student has class room within one hour, the corresponding course materials
-                                will be presented in the GUI.
-                            if the student does not have class at the moment, the GUI presents a personal class 
-                                timetable for the student.
-
-                        """
-                        """
-                        TODO: 
-                        1. Update respective student in Students table with new login_time
-                        2. Get the time of the most recent class, and see if its within 1 hour from now
-                        3. If it is, use gui_utils to display class information
-                        4. If not, use gui_utils to display student's course schedule
-                        5. Make sure to execute logout date on ctrl+c or exit event
-
-                        If we want more marks...
-                        - Add hyperlink functionality to zoom links
-                        - Make the UI better lmao
-                        """
 
                         update =  "UPDATE Students SET login_date=CURDATE() WHERE student_name='{}'".format(name)
                         db.execute_update_query(update)
@@ -120,6 +100,10 @@ def start_login():
                             ci.render()
                         
                         win_started = True
+                        
+                        # Set logout_time
+                        update = "UPDATE Students SET logout_time=NOW() WHERE student_name='{}'".format(name)
+                        db.execute_update_query(update)
                         break
 
                 # If the face is unrecognized
@@ -136,6 +120,7 @@ def start_login():
             k = cv2.waitKey(20) & 0xff
             if k == ord('q') or win_started:
                 break
+
         cap.release()
         cv2.destroyAllWindows()
 
