@@ -5,7 +5,7 @@ from datetime import datetime
 from database import database_utils 
 import tkinter as tk
 from datetime import datetime, timedelta
-from gui.gui_utils import CourseInformationWindow, CourseScheduleWindow
+from gui.gui_utils import CourseInformationWindow, CourseScheduleWindow, WelcomeWindow
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -83,9 +83,19 @@ def start_login():
                         hello = ("Hello ", current_name, "You did attendance today")
                         print(hello)
 
+                        get_login_time = "SELECT login_time FROM Students WHERE student_name='{}'".format(name)
+                        login_time = db.execute_query(get_login_time)
+                        login_time = login_time[0][0].strftime('%b %d, %Y %H:%M:%S')
+
                         now = datetime.now()
-                        next_start_class_time = datetime.strptime(db.getNextClassStartTime(name), "%H:%M:%S").time()
-                        next_class_time = datetime.combine(now.date(), next_start_class_time)
+
+                        ws = WelcomeWindow(name, login_time)
+                        ws.render()
+
+                        next_class_time = db.getNextClassStartTime(name)
+                        if next_class_time != '-1':
+                            next_start_class_time = datetime.strptime(next_class_time, "%H:%M:%S").time()
+                            next_class_time = datetime.combine(now.date(), next_start_class_time)
 
                         # If there is no class today or class isnt in the next hour
                         if next_class_time == '-1' or not (now <= next_class_time <= now + timedelta(hours=1)):

@@ -12,15 +12,19 @@ VALUES('Introduction to Databases', 'This is a beginner course for databases', @
 SET @courseId = LAST_INSERT_ID();
 
 INSERT INTO Classes(course_id, day_of_week, start_time, end_time, classroom, zoom_link)
-VALUES(@courseId, 'Tuesday', '17:00:00', '22:00:00', 'Room 101', 'www.zoomlink.com');
+VALUES(@courseId, 'Wednesday', '17:00:00', '22:00:00', 'Room 101', 'www.zoomlink.com');
 
 INSERT INTO Classes(course_id, day_of_week, start_time, end_time, classroom, zoom_link)
 VALUES(@courseId, 'Thursday', '20:00:00', '22:00:00', 'Room 102', 'www.zoomlink.com');
+
+INSERT INTO Classes(course_id, day_of_week, start_time, end_time, classroom, zoom_link)
+VALUES(@courseId, 'Tuesday', '23:00:00', '23:59:00', 'Room 103', 'www.zoomlink.com');
 
 SET @studentId = (SELECT student_id FROM Students WHERE student_name = 'Derrick');
 
 SET @classId1 = (SELECT class_id FROM Classes WHERE day_of_week = 'Tuesday' AND course_id = @courseId);
 SET @classId2 = (SELECT class_id FROM Classes WHERE day_of_week = 'Thursday' AND course_id = @courseId);
+SET @classId3 = (SELECT class_id FROM Classes WHERE day_of_week = 'Wednesday' AND course_id = @courseId);
 
 INSERT INTO StudentClass(student_id, class_id)
-VALUES(@studentId, @classId1), (@studentId, @classId2);
+VALUES(@studentId, @classId1), (@studentId, @classId2), (@studentId, @classId3);

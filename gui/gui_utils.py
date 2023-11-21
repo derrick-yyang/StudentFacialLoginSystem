@@ -1,4 +1,44 @@
 import tkinter as tk
+import webbrowser
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+class WelcomeWindow:
+    def __init__(self, user, login_time):
+        # Create tkinter window and set the size
+        self.root = tk.Tk()
+        self.root.title("Successfully logged in as: {}. Welcome!".format(user))
+        self.root.geometry("650x300")
+
+        self.user = user
+        self.login_time = login_time
+
+    def render(self):
+        self.welcome_screen()
+        self.root.mainloop()
+    
+    def welcome_screen(self):
+        # Create a canvas and scrollbar
+        canvas = tk.Canvas(self.root)
+        scrollbar = tk.Scrollbar(self.root, command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Create a frame and put it on the canvas
+        frame = tk.Frame(canvas)
+        canvas.pack(side='left', fill='both', expand=True)
+        scrollbar.pack(side='right', fill='y')
+        canvas.create_window((0, 0), window=frame, anchor='nw')
+
+        # Update the scrollregion of the canvas when the size of the frame changes
+        frame.bind('<Configure>', lambda _: canvas.configure(scrollregion=canvas.bbox('all')))
+
+        welcome_label = tk.Label(frame, text="Welcome, {}!".format(self.user), font=("Helvetica", 24))
+        welcome_label.grid(row=0, column=0, padx=200, pady=50)
+
+        login_time_label = tk.Label(frame, text=f"Your login time: {self.login_time}", font=("Helvetica", 16))
+        login_time_label.grid(row=1, column=0, pady=50)
+
 
 class CourseScheduleWindow:
     def __init__(self, user, schedule):
@@ -82,9 +122,51 @@ class CourseInformationWindow:
 
         self.course_details = course_details
 
+        # Entry widgets for user to input their email and password
+        self.email_entry = tk.Entry(self.root, font=("Helvetica", 16))
+
     def render(self):
         self.add_course_details()
         self.root.mainloop()
+
+    def open_link(self, url):
+        webbrowser.open(url)
+    
+    def send_email(self, frame):
+        user_email = self.email_entry.get()
+
+        # email credentials and SMTP server details
+        smtp_server = 'smtp.office365.com'
+        smtp_port = 587
+        smtp_user = 'comp3278group31@outlook.com'
+        smtp_password = 'group31project'
+
+        msg = MIMEMultipart()
+        msg['From'] = smtp_user
+        msg['To'] = user_email
+        msg['Subject'] = 'Course Details'
+
+        # Format the course details into the body of the email
+        body = "\n".join([f"{label}: {value}" for label, value in self.course_details.items()])
+        msg.attach(MIMEText(body, 'plain'))
+
+        try:
+            # Connect to the SMTP server
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                # Login to the SMTP server
+                server.starttls()
+                server.login(smtp_user, smtp_password)
+
+                # Send the email
+                server.sendmail(smtp_user, user_email, msg.as_string())
+            
+            success_message = tk.Label(frame, text=f"Email sent successfully to: {user_email}!", font=("Helvetica", 14), fg="green")
+            success_message.grid(row=2, column=0, columnspan=2, pady=10)
+
+        except Exception as e:
+            error_message = tk.Label(frame, text=f"Error sending email: {e}", font=("Helvetica", 14), fg="red")
+            error_message.grid(row=2, column=0, columnspan=2, pady=10)
+
 
     def add_course_details(self):
          # Course name and title
@@ -111,7 +193,27 @@ class CourseInformationWindow:
         labels = ['Course Description', 'Teacher Name', 'Teacher Email', 'Start Time', 'End Time', 'Classroom', 'Zoom Link', 'Lecture Notes']
         for i in range(len(labels)):
             tk.Label(frame, text=labels[i]+":", font=("Helvetica", 20)).grid(row=i, column=0, sticky='', pady=10, padx=40)
-            tk.Label(frame, text=self.course_details[labels[i]], font=("Helvetica", 16)).grid(row=i, column=1, sticky='', pady=10, padx=40)
+            label1 = tk.Label(frame, text=self.course_details[labels[i]], font=("Helvetica", 16))
+            label1.grid(row=i, column=1, sticky='', pady=10, padx=40)
+            if labels[i] == 'Zoom Link':
+                label1.config(cursor="hand2", fg="blue", underline=True)
+                label1.bind("<Button-1>", lambda event, url=self.course_details[labels[i]]: self.open_link(url))
+
+        # Create a frame to contain the labels and entry widgets
+        info_frame = tk.Frame(frame, borderwidth=2, relief="solid")
+        info_frame.grid(row=len(self.course_details), column=0, columnspan=3, pady=20, padx=10)
+
+        email_entry_title = tk.Label(info_frame, text="Send the above course information to your email", font=("Helvetica", 20)).grid(row=0, column=0, columnspan=3, pady=10)
+        # Entry widgets for user to input their email
+        email_entry_label = tk.Label(info_frame, text="Your Email:", font=("Helvetica", 16))
+        email_entry_label.grid(row=1, column=0, pady=5)
+
+        self.email_entry = tk.Entry(info_frame, font=("Helvetica", 16))
+        self.email_entry.grid(row=1, column=1, pady=5)
+
+        # Create a button to send email
+        send_email_button = tk.Button(info_frame, text="Send Email", command=lambda: self.send_email(info_frame), font=("Helvetica", 16))
+        send_email_button.grid(row=1, column=3, pady=5)
 
 # # Just for testing ~
 # schedule = {
