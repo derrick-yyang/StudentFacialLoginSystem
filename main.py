@@ -81,7 +81,18 @@ def start_login():
                                 timetable for the student.
 
                         """
-                        print("student found")
+                        """
+                        TODO: 
+                        1. Update respective student in Students table with new login_time
+                        2. Get the time of the most recent class, and see if its within 1 hour from now
+                        3. If it is, use gui_utils to display class information
+                        4. If not, use gui_utils to display student's course schedule
+                        5. Make sure to execute logout date on ctrl+c or exit event
+
+                        If we want more marks...
+                        - Add hyperlink functionality to zoom links
+                        - Make the UI better lmao
+                        """
                         # update =  "UPDATE Student SET login_date=%s WHERE name=%s"
                         # val = (date, current_name)
                         # db.execute_update_query(update, val)
