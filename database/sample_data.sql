@@ -1,34 +1,26 @@
--- Insert a student named Derrick
-INSERT INTO Students (student_name, login_time, logout_time)
-VALUES ('Derrick', NOW(), NOW());
+INSERT INTO Students(student_name, login_time, logout_time, login_date)
+VALUES('Derrick', NOW(), NOW(), CURDATE());
 
--- Insert a teacher (we need a teacher before we can create a course)
-INSERT INTO Teachers (teacher_name, teacher_email)
-VALUES ('John Doe', 'johndoe@example.com');
+INSERT INTO Teachers(teacher_name, teacher_email)
+VALUES('John Doe', 'johndoe@email.com');
 
--- Get the ID of the teacher we just inserted
-SET @teacher_id = (SELECT teacher_id FROM Teachers WHERE teacher_name = 'John Doe');
+SET @courseTeacherId = LAST_INSERT_ID();
 
--- Insert a course called "Introduction to Databases"
-INSERT INTO Courses (course_name, course_description, teacher_id, lecture_notes)
-VALUES ('Introduction to Databases', 'This is a course about databases.', @teacher_id, 'Lecture notes for the course');
+INSERT INTO Courses(course_name, course_description, teacher_id, lecture_notes)
+VALUES('Introduction to Databases', 'This is a beginner course for databases', @courseTeacherId, 'Note 1');
 
--- Get the ID of the course we just inserted
-SET @course_id = (SELECT course_id FROM Courses WHERE course_name = 'Introduction to Databases');
+SET @courseId = LAST_INSERT_ID();
 
--- Insert two classes that happen at 2:30pm - 3:30pm on Tuesday and Thursday
-INSERT INTO Classes (course_id, day_of_week, start_time, end_time, classroom, zoom_link)
-VALUES (@course_id, 'Tuesday', '14:00:00', '15:00:00', 'Room 101', 'https://zoom.us/j/1234567890'),
-       (@course_id, 'Thursday', '14:00:00', '15:00:00', 'Room 101', 'https://zoom.us/j/1234567890');
+INSERT INTO Classes(course_id, day_of_week, start_time, end_time, classroom, zoom_link)
+VALUES(@courseId, 'Tuesday', '17:00:00', '22:00:00', 'Room 101', 'www.zoomlink.com');
 
--- Get the ID of the student we inserted earlier
-SET @student_id = (SELECT student_id FROM Students WHERE student_name = 'Derrick');
+INSERT INTO Classes(course_id, day_of_week, start_time, end_time, classroom, zoom_link)
+VALUES(@courseId, 'Thursday', '20:00:00', '22:00:00', 'Room 102', 'www.zoomlink.com');
 
--- Get the IDs of the classes we just inserted
-SET @class_id_tuesday = (SELECT class_id FROM Classes WHERE zoom_link = 'https://zoom.us/j/1234567890' AND day_of_week = 'Tuesday');
-SET @class_id_thursday = (SELECT class_id FROM Classes WHERE zoom_link = 'https://zoom.us/j/1234567890' AND day_of_week = 'Thursday');
+SET @studentId = (SELECT student_id FROM Students WHERE student_name = 'Derrick');
 
--- Enroll Derrick in these two classes
-INSERT INTO StudentClass (student_id, class_id)
-VALUES (@student_id, @class_id_tuesday),
-       (@student_id, @class_id_thursday);
+SET @classId1 = (SELECT class_id FROM Classes WHERE day_of_week = 'Tuesday' AND course_id = @courseId);
+SET @classId2 = (SELECT class_id FROM Classes WHERE day_of_week = 'Thursday' AND course_id = @courseId);
+
+INSERT INTO StudentClass(student_id, class_id)
+VALUES(@studentId, @classId1), (@studentId, @classId2);

@@ -46,11 +46,12 @@ class CourseScheduleWindow:
         
         # Add the courses from the given schedule
         for name in self.schedule:
-            details = self.schedule[name]
-            self.add_course(course_name=name, day=details[2], start_time=details[0], end_time=details[1], frame=frame)
+            classes = self.schedule[name]
+            for details in classes:
+                self.add_class(course_name=name, day=details[2], start_time=details[0], end_time=details[1], frame=frame)
 
     
-    def add_course(self, course_name, day, start_time, end_time, frame):
+    def add_class(self, course_name, day, start_time, end_time, frame):
         # Add a green box for a course -- This is how you add a course, make sure it's all on the hour
         course_label = tk.Label(frame, text=course_name, bg="green", width=15, wraplength=100)
 

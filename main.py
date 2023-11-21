@@ -1,11 +1,11 @@
-import mysql.connector
 import cv2
 import pickle
 import os
 from datetime import datetime
-import PySimpleGUI as sg
 from database import database_utils 
 import tkinter as tk
+from datetime import datetime, timedelta
+from gui.gui_utils import CourseInformationWindow, CourseScheduleWindow
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,6 +15,7 @@ def start_login():
         date = datetime.utcnow()
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
+        name = 'Derrick' # TODO: Remove this after camera recognition is accurate
 
 
         #2 Load recognize and read label from model
@@ -37,6 +38,7 @@ def start_login():
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=5)
+            win_started = False
 
             for (x, y, w, h) in faces:
                 print(x, w, y, h)
@@ -50,7 +52,7 @@ def start_login():
                     font = cv2.QT_FONT_NORMAL
                     id = 0
                     id += 1
-                    name = labels[id_]
+                    # name = labels[id_]
                     current_name = name
                     color = (255, 0, 0)
                     stroke = 2
@@ -58,7 +60,7 @@ def start_login():
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), (2))
 
                     # Find the student's information in the database.
-                    select = "SELECT student_id, name, DAY(login_date), MONTH(login_date), YEAR(login_date) FROM Student WHERE name='%s'" % (name)
+                    select = "SELECT student_id, student_name, DAY(login_date), MONTH(login_date), YEAR(login_date) FROM Students WHERE student_name='%s'" % (name)
                     result = db.execute_query(select)
                     # print(result)
                     data = "error"
@@ -69,27 +71,40 @@ def start_login():
                     # If the student's information is not found in the database
                     if data == "error":
                         print("The student", current_name, "is NOT FOUND in the database.")
-                # If the student's information is found in the database
+                        
+                     # If the student's information is found in the database
                     else:
-                        """
-                        Implement useful functions here.
-                        Check the course and classroom for the student.
-                            If the student has class room within one hour, the corresponding course materials
-                                will be presented in the GUI.
-                            if the student does not have class at the moment, the GUI presents a personal class 
-                                timetable for the student.
 
-                        """
-                        print("student found")
-                        # update =  "UPDATE Student SET login_date=%s WHERE name=%s"
-                        # val = (date, current_name)
-                        # db.execute_update_query(update, val)
-                        # update = "UPDATE Student SET login_time=%s WHERE name=%s"
-                        # val = (current_time, current_name)
-                        # db.execute_update_query(update, val)
+                        update =  "UPDATE Students SET login_date=CURDATE() WHERE student_name='{}'".format(name)
+                        db.execute_update_query(update)
+                        update = "UPDATE Students SET login_time=NOW() WHERE student_name='{}'".format(name)
+                        db.execute_update_query(update)
                     
-                        # hello = ("Hello ", current_name, "You did attendance today")
-                        # print(hello) 
+                        hello = ("Hello ", current_name, "You did attendance today")
+                        print(hello)
+
+                        now = datetime.now()
+                        next_start_class_time = datetime.strptime(db.getNextClassStartTime(name), "%H:%M:%S").time()
+                        next_class_time = datetime.combine(now.date(), next_start_class_time)
+
+                        # If there is no class today or class isnt in the next hour
+                        if next_class_time == '-1' or not (now <= next_class_time <= now + timedelta(hours=1)):
+                            schedule = db.getClassSchedule(name)
+                            cs = CourseScheduleWindow(name, schedule)
+                            cs.render()
+
+                        # If there is class in the next hour...
+                        else:
+                            class_info = db.getNextClassInfo(name)
+                            ci = CourseInformationWindow(name, course_details=class_info)
+                            ci.render()
+                        
+                        win_started = True
+                        
+                        # Set logout_time
+                        update = "UPDATE Students SET logout_time=NOW() WHERE student_name='{}'".format(name)
+                        db.execute_update_query(update)
+                        break
 
                 # If the face is unrecognized
                 else: 
@@ -103,7 +118,7 @@ def start_login():
 
             cv2.imshow('Attendance System', frame)
             k = cv2.waitKey(20) & 0xff
-            if k == ord('q'):
+            if k == ord('q') or win_started:
                 break
 
         cap.release()
@@ -112,9 +127,8 @@ def start_login():
 def main():
     
     # Define login interface
-    name = 'Derrick'
     root = tk.Tk()
-    root.title('Welcome ' + name)
+    root.title('Welcome!')
 
     def button_click():
         root.destroy()
