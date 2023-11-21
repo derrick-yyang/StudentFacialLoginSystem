@@ -53,6 +53,7 @@ LIMIT
     1;""".format(name)
         
         result = self.execute_query(query)
+        print(result)
 
         return str(result[0][0]) # Return in readable format
     
@@ -101,8 +102,9 @@ JOIN
 JOIN 
     Teachers T ON CO.teacher_id = T.teacher_id
 WHERE 
-    S.student_name = '{}' AND
-    C.start_time > NOW()
+    S.student_name = 'Derrick' AND
+    C.start_time > NOW() AND
+    C.day_of_week = DAYOFWEEK(NOW())
 ORDER BY 
     C.start_time 
 LIMIT 
