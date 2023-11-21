@@ -84,8 +84,11 @@ def start_login():
                         print(hello)
 
                         now = datetime.now()
-                        next_start_class_time = datetime.strptime(db.getNextClassStartTime(name), "%H:%M:%S").time()
-                        next_class_time = datetime.combine(now.date(), next_start_class_time)
+
+                        next_class_time = db.getNextClassStartTime(name)
+                        if next_class_time != '-1':
+                            next_start_class_time = datetime.strptime(next_class_time, "%H:%M:%S").time()
+                            next_class_time = datetime.combine(now.date(), next_start_class_time)
 
                         # If there is no class today or class isnt in the next hour
                         if next_class_time == '-1' or not (now <= next_class_time <= now + timedelta(hours=1)):

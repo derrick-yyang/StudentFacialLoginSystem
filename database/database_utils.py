@@ -45,7 +45,7 @@ JOIN
 JOIN 
     Students S ON SC.student_id = S.student_id
 WHERE 
-    S.student_name = 'Derrick' AND
+    S.student_name = '{}' AND
     C.start_time > NOW() AND
     DAYOFWEEK(C.start_time) = DAYOFWEEK(NOW())
 ORDER BY 
