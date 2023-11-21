@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Courses (
 CREATE TABLE IF NOT EXISTS Classes (
     class_id INT AUTO_INCREMENT PRIMARY KEY,
     course_id INT,
-    day_of_week INT,
+    day_of_week VARCHAR(15),
     start_time TIME,
     end_time TIME,
     classroom VARCHAR(50),

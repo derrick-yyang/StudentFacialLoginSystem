@@ -1,11 +1,11 @@
-import mysql.connector
 import cv2
 import pickle
 import os
 from datetime import datetime
-import PySimpleGUI as sg
 from database import database_utils 
 import tkinter as tk
+from datetime import datetime, timedelta
+from gui.gui_utils import CourseInformationWindow, CourseScheduleWindow
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -38,6 +38,7 @@ def start_login():
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=5)
+            win_started = False
 
             for (x, y, w, h) in faces:
                 print(x, w, y, h)
@@ -59,7 +60,7 @@ def start_login():
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), (2))
 
                     # Find the student's information in the database.
-                    select = "SELECT student_id, student_name, DAY(login_date), MONTH(login_date), YEAR(login_date) FROM Students WHERE name='%s'" % (name)
+                    select = "SELECT student_id, student_name, DAY(login_date), MONTH(login_date), YEAR(login_date) FROM Students WHERE student_name='%s'" % (name)
                     result = db.execute_query(select)
                     # print(result)
                     data = "error"
@@ -93,15 +94,33 @@ def start_login():
                         - Add hyperlink functionality to zoom links
                         - Make the UI better lmao
                         """
-                        # update =  "UPDATE Student SET login_date=%s WHERE name=%s"
-                        # val = (date, current_name)
-                        # db.execute_update_query(update, val)
-                        # update = "UPDATE Student SET login_time=%s WHERE name=%s"
-                        # val = (current_time, current_name)
-                        # db.execute_update_query(update, val)
+
+                        update =  "UPDATE Students SET login_date=CURDATE() WHERE student_name='{}'".format(name)
+                        db.execute_update_query(update)
+                        update = "UPDATE Students SET login_time=NOW() WHERE student_name='{}'".format(name)
+                        db.execute_update_query(update)
                     
-                        # hello = ("Hello ", current_name, "You did attendance today")
-                        # print(hello) 
+                        hello = ("Hello ", current_name, "You did attendance today")
+                        print(hello)
+
+                        now = datetime.now()
+                        next_start_class_time = datetime.strptime(db.getNextClassStartTime(name), "%H:%M:%S").time()
+                        next_class_time = datetime.combine(now.date(), next_start_class_time)
+
+                        # If there is no class today or class isnt in the next hour
+                        if next_class_time == '-1' or not (now <= next_class_time <= now + timedelta(hours=1)):
+                            schedule = db.getClassSchedule(name)
+                            cs = CourseScheduleWindow(name, schedule)
+                            cs.render()
+
+                        # If there is class in the next hour...
+                        else:
+                            class_info = db.getNextClassInfo(name)
+                            ci = CourseInformationWindow(name, course_details=class_info)
+                            ci.render()
+                        
+                        win_started = True
+                        break
 
                 # If the face is unrecognized
                 else: 
@@ -115,9 +134,8 @@ def start_login():
 
             cv2.imshow('Attendance System', frame)
             k = cv2.waitKey(20) & 0xff
-            if k == ord('q'):
+            if k == ord('q') or win_started:
                 break
-
         cap.release()
         cv2.destroyAllWindows()
 

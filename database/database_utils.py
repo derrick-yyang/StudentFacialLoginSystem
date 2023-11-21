@@ -45,17 +45,17 @@ JOIN
 JOIN 
     Students S ON SC.student_id = S.student_id
 WHERE 
-    S.student_name = '{}' AND
-    C.start_time > NOW()
+    S.student_name = 'Derrick' AND
+    C.start_time > NOW() AND
+    DAYOFWEEK(C.start_time) = DAYOFWEEK(NOW())
 ORDER BY 
     C.start_time 
 LIMIT 
     1;""".format(name)
         
         result = self.execute_query(query)
-        print(result)
 
-        return str(result[0][0]) # Return in readable format
+        return str(result[0][0]) if len(result) != 0 else '-1' # Return in readable format
     
     def getClassSchedule(self, name):
         query = """SELECT 
@@ -104,7 +104,7 @@ JOIN
 WHERE 
     S.student_name = 'Derrick' AND
     C.start_time > NOW() AND
-    C.day_of_week = DAYOFWEEK(NOW())
+    DAYOFWEEK(C.start_time) = DAYOFWEEK(NOW())
 ORDER BY 
     C.start_time 
 LIMIT 
