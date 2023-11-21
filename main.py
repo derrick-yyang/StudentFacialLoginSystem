@@ -5,7 +5,7 @@ from datetime import datetime
 from database import database_utils 
 import tkinter as tk
 from datetime import datetime, timedelta
-from gui.gui_utils import CourseInformationWindow, CourseScheduleWindow
+from gui.gui_utils import CourseInformationWindow, CourseScheduleWindow, WelcomeWindow
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -83,7 +83,14 @@ def start_login():
                         hello = ("Hello ", current_name, "You did attendance today")
                         print(hello)
 
+                        get_login_time = "SELECT login_time FROM Students WHERE student_name='{}'".format(name)
+                        login_time = db.execute_query(get_login_time)
+                        login_time = login_time[0][0].strftime('%b %d, %Y %H:%M:%S')
+
                         now = datetime.now()
+
+                        ws = WelcomeWindow(name, login_time)
+                        ws.render()
 
                         next_class_time = db.getNextClassStartTime(name)
                         if next_class_time != '-1':

@@ -4,6 +4,42 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+class WelcomeWindow:
+    def __init__(self, user, login_time):
+        # Create tkinter window and set the size
+        self.root = tk.Tk()
+        self.root.title("Successfully logged in as: {}. Welcome!".format(user))
+        self.root.geometry("650x300")
+
+        self.user = user
+        self.login_time = login_time
+
+    def render(self):
+        self.welcome_screen()
+        self.root.mainloop()
+    
+    def welcome_screen(self):
+        # Create a canvas and scrollbar
+        canvas = tk.Canvas(self.root)
+        scrollbar = tk.Scrollbar(self.root, command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Create a frame and put it on the canvas
+        frame = tk.Frame(canvas)
+        canvas.pack(side='left', fill='both', expand=True)
+        scrollbar.pack(side='right', fill='y')
+        canvas.create_window((0, 0), window=frame, anchor='nw')
+
+        # Update the scrollregion of the canvas when the size of the frame changes
+        frame.bind('<Configure>', lambda _: canvas.configure(scrollregion=canvas.bbox('all')))
+
+        welcome_label = tk.Label(frame, text="Welcome, {}!".format(self.user), font=("Helvetica", 24))
+        welcome_label.grid(row=0, column=0, padx=200, pady=50)
+
+        login_time_label = tk.Label(frame, text=f"Your login time: {self.login_time}", font=("Helvetica", 16))
+        login_time_label.grid(row=1, column=0, pady=50)
+
+
 class CourseScheduleWindow:
     def __init__(self, user, schedule):
         # Create tkinter window and set the size
