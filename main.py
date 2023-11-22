@@ -171,14 +171,11 @@ def main():
         root.destroy()
         start_login()
 
-
-    # Configure button with a minimalistic style
-    alertButton = tk.Button(root, text="Login", bg="black", fg="black", font=("Helvetica", 12, "bold"), 
-                   command=button_click, relief="flat", bd=0, padx=20, pady=7)
+    alertButton = tk.Button(root, text="Login", bg="black", fg="dark green", font=("Helvetica", 15, "bold"), 
+                   command=button_click, bd=0, padx=20, pady=7, borderwidth=0)
     
     alertButton.pack(pady=25)
 
-    # Configure label with a minimalistic style
     message = tk.Label(root, text="Hello! Welcome to the Intelligent Course Management System. Click Login to Start Facial Login.",
                        bg='white', fg='black', font=('Helvetica', 12))
     message.pack(pady=20)
