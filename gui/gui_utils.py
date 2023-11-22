@@ -9,8 +9,13 @@ class WelcomeWindow:
         # Create tkinter window and set the size
         self.root = tk.Tk()
         self.root.title("Successfully logged in as: {}. Welcome!".format(user))
-        self.root.geometry("650x300")
-
+        window_height = 300
+        window_width = 650
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        position_top = int(screen_height / 2 - window_height / 2)
+        position_right = int(screen_width / 2 - window_width / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
         self.user = user
         self.login_time = login_time
 
@@ -45,8 +50,13 @@ class CourseScheduleWindow:
         # Create tkinter window and set the size
         self.root = tk.Tk()
         self.root.title("{}'s Course Schedule".format(user))
-        self.root.geometry("1300x800")
-
+        window_height = 800
+        window_width = 1300
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        position_top = int(screen_height / 2 - window_height / 2)
+        position_right = int(screen_width / 2 - window_width / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
         self.schedule = schedule
 
     def render(self):
@@ -106,19 +116,29 @@ class CourseScheduleWindow:
             'Saturday'  : 7,
             'Sunday'    : 8
         }
-        row_offset = 2 # offset for the columns accounted for the labelsß
+        row_offset = 2 # offset for the columns accounted for the labels
         start_hour = int(start_time.split(':')[0]) + row_offset
         end_hour = int(end_time.split(':')[0]) + row_offset
 
+        # Ensure that rowspan is at least 1
+        rowspan_value = max(1, end_hour - start_hour)
+
         # Position the Course at it's respective day and time
-        course_label.grid(row=start_hour, column=day_to_col[day], rowspan=end_hour-start_hour, sticky='nsew')
+        course_label.grid(row=start_hour, column=day_to_col[day], rowspan=rowspan_value, sticky='nsew')
+
 
 class CourseInformationWindow:
     def __init__(self, user, course_details):
         # Create tkinter window and set the size
         self.root = tk.Tk()
         self.root.title("{}'s Upcoming Course Details".format(user))
-        self.root.geometry("1300x800")
+        window_height = 800
+        window_width = 1300
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        position_top = int(screen_height / 2 - window_height / 2)
+        position_right = int(screen_width / 2 - window_width / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
         self.course_details = course_details
 
