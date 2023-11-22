@@ -189,7 +189,7 @@ class CourseInformationWindow:
         title_frame = tk.Frame(self.root)
         title_frame.pack(side='top', fill='x')
         title = tk.Label(title_frame, text=self.course_details['name'], font=("Helvetica", 50))
-        title.pack(pady=20)
+        title.pack(pady=40)
 
         # Create a canvas and scrollbar
         canvas = tk.Canvas(self.root)
@@ -208,7 +208,7 @@ class CourseInformationWindow:
         # Create labels and text boxes for each course information
         labels = ['Course Description', 'Teacher Name', 'Teacher Email', 'Start Time', 'End Time', 'Classroom', 'Zoom Link', 'Lecture Notes']
         for i in range(len(labels)):
-            tk.Label(frame, text=labels[i]+":", font=("Helvetica", 20)).grid(row=i, column=0, sticky='', pady=10, padx=40)
+            tk.Label(frame, text=labels[i]+":", font=("Helvetica", 20)).grid(row=i, column=0, sticky='', pady=15, padx=200)
             label1 = tk.Label(frame, text=self.course_details[labels[i]], font=("Helvetica", 16))
             label1.grid(row=i, column=1, sticky='', pady=10, padx=40)
             if labels[i] == 'Zoom Link':
@@ -217,9 +217,9 @@ class CourseInformationWindow:
 
         # Create a frame to contain the labels and entry widgets
         info_frame = tk.Frame(frame, borderwidth=2, relief="solid")
-        info_frame.grid(row=len(self.course_details), column=0, columnspan=3, pady=20, padx=10)
+        info_frame.grid(row=len(self.course_details), column=0, columnspan=3, pady=20, padx=350)
 
-        email_entry_title = tk.Label(info_frame, text="Send the above course information to your email", font=("Helvetica", 20)).grid(row=0, column=0, columnspan=3, pady=10)
+        email_entry_title = tk.Label(info_frame, text="Send the above course information to your email", font=("Helvetica", 20)).grid(row=0, column=0, columnspan=3, pady=10, padx=50)
         # Entry widgets for user to input their email
         email_entry_label = tk.Label(info_frame, text="Your Email:", font=("Helvetica", 16))
         email_entry_label.grid(row=1, column=0, pady=5)
@@ -229,7 +229,7 @@ class CourseInformationWindow:
 
         # Create a button to send email
         send_email_button = tk.Button(info_frame, text="Send Email", command=lambda: self.send_email(info_frame), font=("Helvetica", 16))
-        send_email_button.grid(row=1, column=3, pady=5)
+        send_email_button.grid(row=1, column=2, pady=5)
 
 # # Just for testing ~
 # schedule = {
