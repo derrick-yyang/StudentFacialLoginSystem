@@ -31,6 +31,20 @@ def start_login():
         face_cascade = cv2.CascadeClassifier(os.path.join(BASE_DIR, 'haarcascade/haarcascade_frontalface_default.xml'))
         cap = cv2.VideoCapture(0)
         
+        # Get the screen width and height
+        screen_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        screen_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        # Calculate the position to center the window
+        window_x = int((screen_width - 1300) / 2)
+        window_y = int((screen_height - 800) / 2)
+
+        # Create a named window
+        cv2.namedWindow('Attendance System', cv2.WINDOW_NORMAL)
+
+        # Move the window to the center of the screen
+        cv2.moveWindow('Attendance System', window_x, window_y)
+
         GUI_CONFIDENCE = 0 # Set confidence rate to 0 for demo purposes
 
         # start face recognition
@@ -82,7 +96,7 @@ def start_login():
                     
                         hello = ("Hello ", current_name, "You did attendance today")
                         print(hello)
-
+                        cv2.destroyAllWindows()
                         get_login_time = "SELECT login_time FROM Students WHERE student_name='{}'".format(name)
                         login_time = db.execute_query(get_login_time)
                         login_time = login_time[0][0].strftime('%b %d, %Y %H:%M:%S')
@@ -114,6 +128,7 @@ def start_login():
                         # Set logout_time
                         update = "UPDATE Students SET logout_time=NOW() WHERE student_name='{}'".format(name)
                         db.execute_update_query(update)
+                        
                         break
 
                 # If the face is unrecognized
@@ -135,19 +150,36 @@ def start_login():
         cv2.destroyAllWindows()
 
 def main():
-    
     # Define login interface
     root = tk.Tk()
     root.title('Welcome!')
+    
+    # Set the window's size and position
+    window_width = 640
+    window_height = 150
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    # Set the window's background color
+    root.configure(bg='white')
 
     def button_click():
         root.destroy()
-    
-    alertButton = tk.Button(root, text='login', command=button_click)
-    alertButton.pack()
+        start_login()
 
-    message = tk.Label(root, text="Hello! Welcome to the Intelligent Course Management System. Click Login to Start Facial Login.")
-    message.pack()
+    alertButton = tk.Button(root, text="Login", bg="black", fg="dark green", font=("Helvetica", 15, "bold"), 
+                   command=button_click, bd=0, padx=20, pady=7, borderwidth=0)
+    
+    alertButton.pack(pady=25)
+
+    message = tk.Label(root, text="Hello! Welcome to the Intelligent Course Management System. Click Login to Start Facial Login.",
+                       bg='white', fg='black', font=('Helvetica', 12))
+    message.pack(pady=20)
+
     root.mainloop()
 
     # Wait until login button is clicked
@@ -155,9 +187,7 @@ def main():
         try:
             tk.Tk.winfo_exists(root)
         except tk.TclError:
-            start_login()
             break
-
     
 if __name__ == '__main__':
     main()

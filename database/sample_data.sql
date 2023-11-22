@@ -12,13 +12,13 @@ VALUES('Introduction to Databases', 'This is a beginner course for databases', @
 SET @courseId = LAST_INSERT_ID();
 
 INSERT INTO Classes(course_id, day_of_week, start_time, end_time, classroom, zoom_link)
-VALUES(@courseId, 'Wednesday', '17:00:00', '22:00:00', 'Room 101', 'www.zoomlink.com');
+VALUES(@courseId, 'Wednesday', '00:00:00', '22:00:00', 'Room 101', 'https://zoom.us');
 
 INSERT INTO Classes(course_id, day_of_week, start_time, end_time, classroom, zoom_link)
-VALUES(@courseId, 'Thursday', '20:00:00', '22:00:00', 'Room 102', 'www.zoomlink.com');
+VALUES(@courseId, 'Thursday', '20:00:00', '22:00:00', 'Room 102', 'https://zoom.us');
 
 INSERT INTO Classes(course_id, day_of_week, start_time, end_time, classroom, zoom_link)
-VALUES(@courseId, 'Tuesday', '23:00:00', '23:59:00', 'Room 103', 'www.zoomlink.com');
+VALUES(@courseId, 'Tuesday', '23:00:00', '23:59:00', 'Room 103', 'https://zoom.us');
 
 SET @studentId = (SELECT student_id FROM Students WHERE student_name = 'Derrick');
 

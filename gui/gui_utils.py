@@ -4,13 +4,24 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+import tkinter as tk
+from tkinter import ttk
+
 class WelcomeWindow:
     def __init__(self, user, login_time):
         # Create tkinter window and set the size
         self.root = tk.Tk()
+        # Create a custom style for the frame with a modern look
+        style = ttk.Style()
+        style.configure("Modern.TFrame", background="#f2f2f2", borderwidth=10)
         self.root.title("Successfully logged in as: {}. Welcome!".format(user))
-        self.root.geometry("650x300")
-
+        window_height = 280
+        window_width = 650
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        position_top = int(screen_height / 2 - window_height / 2)
+        position_right = int(screen_width / 2 - window_width / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
         self.user = user
         self.login_time = login_time
 
@@ -19,25 +30,15 @@ class WelcomeWindow:
         self.root.mainloop()
     
     def welcome_screen(self):
-        # Create a canvas and scrollbar
-        canvas = tk.Canvas(self.root)
-        scrollbar = tk.Scrollbar(self.root, command=canvas.yview)
-        canvas.configure(yscrollcommand=scrollbar.set)
+        # Create a frame with a modern look
+        frame = ttk.Frame(self.root, style="Modern.TFrame")
+        frame.pack(pady=50)
 
-        # Create a frame and put it on the canvas
-        frame = tk.Frame(canvas)
-        canvas.pack(side='left', fill='both', expand=True)
-        scrollbar.pack(side='right', fill='y')
-        canvas.create_window((0, 0), window=frame, anchor='nw')
+        welcome_label = ttk.Label(frame, text="Welcome, {}!".format(self.user), font=("Helvetica", 24))
+        welcome_label.pack(pady=(50, 20), padx=(50, 50))
 
-        # Update the scrollregion of the canvas when the size of the frame changes
-        frame.bind('<Configure>', lambda _: canvas.configure(scrollregion=canvas.bbox('all')))
-
-        welcome_label = tk.Label(frame, text="Welcome, {}!".format(self.user), font=("Helvetica", 24))
-        welcome_label.grid(row=0, column=0, padx=200, pady=50)
-
-        login_time_label = tk.Label(frame, text=f"Your login time: {self.login_time}", font=("Helvetica", 16))
-        login_time_label.grid(row=1, column=0, pady=50)
+        login_time_label = ttk.Label(frame, text=f"Your login time: {self.login_time}", font=("Helvetica", 16))
+        login_time_label.pack(pady=(0, 50))
 
 
 class CourseScheduleWindow:
@@ -45,8 +46,13 @@ class CourseScheduleWindow:
         # Create tkinter window and set the size
         self.root = tk.Tk()
         self.root.title("{}'s Course Schedule".format(user))
-        self.root.geometry("1300x800")
-
+        window_height = 800
+        window_width = 1300
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        position_top = int(screen_height / 2 - window_height / 2)
+        position_right = int(screen_width / 2 - window_width / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
         self.schedule = schedule
 
     def render(self):
@@ -75,7 +81,7 @@ class CourseScheduleWindow:
         # Create a grid
         for i in range(len(time)+1):
             for j in range(len(days_of_week)):
-                cell = tk.Frame(frame, borderwidth=1, relief="solid")  # Create a frame with a border
+                cell = tk.Frame(frame, borderwidth=0, relief="solid")  # Create a frame with a border
                 cell.grid(row=i+1, column=j+1, sticky='nsew')  # Position the frame and make it fill the grid cell
                 if i == 0:
                     # Add day labels on the x-axis
@@ -93,7 +99,7 @@ class CourseScheduleWindow:
     
     def add_class(self, course_name, day, start_time, end_time, frame):
         # Add a green box for a course -- This is how you add a course, make sure it's all on the hour
-        course_label = tk.Label(frame, text=course_name, bg="green", width=15, wraplength=100)
+        course_label = tk.Label(frame, text=course_name, bg="light green", width=15, wraplength=100)
 
         # Define the column/row based on start and end time
         # Note: It's offset by +1 due to how the cols are rendered
@@ -106,19 +112,29 @@ class CourseScheduleWindow:
             'Saturday'  : 7,
             'Sunday'    : 8
         }
-        row_offset = 2 # offset for the columns accounted for the labelsß
+        row_offset = 2 # offset for the columns accounted for the labels
         start_hour = int(start_time.split(':')[0]) + row_offset
         end_hour = int(end_time.split(':')[0]) + row_offset
 
+        # Ensure that rowspan is at least 1
+        rowspan_value = max(1, end_hour - start_hour)
+
         # Position the Course at it's respective day and time
-        course_label.grid(row=start_hour, column=day_to_col[day], rowspan=end_hour-start_hour, sticky='nsew')
+        course_label.grid(row=start_hour, column=day_to_col[day], rowspan=rowspan_value, sticky='nsew')
+
 
 class CourseInformationWindow:
     def __init__(self, user, course_details):
         # Create tkinter window and set the size
         self.root = tk.Tk()
         self.root.title("{}'s Upcoming Course Details".format(user))
-        self.root.geometry("1300x800")
+        window_height = 800
+        window_width = 1300
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        position_top = int(screen_height / 2 - window_height / 2)
+        position_right = int(screen_width / 2 - window_width / 2)
+        self.root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
         self.course_details = course_details
 
@@ -160,7 +176,7 @@ class CourseInformationWindow:
                 # Send the email
                 server.sendmail(smtp_user, user_email, msg.as_string())
             
-            success_message = tk.Label(frame, text=f"Email sent successfully to: {user_email}!", font=("Helvetica", 14), fg="green")
+            success_message = tk.Label(frame, text=f"Email sent successfully to: {user_email}!", font=("Helvetica", 14), fg="light green")
             success_message.grid(row=2, column=0, columnspan=2, pady=10)
 
         except Exception as e:
