@@ -89,7 +89,9 @@ mysql> CREATE DATABASE facerecognition;
 mysql> USE facerecognition;
 
 # import from sql file
-mysql> source facerecognition.sql
+mysql> source database/facerecognition.sql
+mysql> source database/sample_data.sql
+
 ```
 
 
